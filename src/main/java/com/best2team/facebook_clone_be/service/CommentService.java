@@ -28,26 +28,21 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final Validator validator;
-    
+
     //댓글 작성
     @Transactional
-    public MsgResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
 
-        String msg = "댓글이 등록 되었습니다.";
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(IllegalArgumentException::new);
 
-        try {
-            validator.emptyComment(requestDto);
-        } catch (IllegalArgumentException e) {
-            msg = e.getMessage();
-            return new MsgResponseDto(msg);
-        }
+        validator.emptyComment(requestDto);
+
         String content = requestDto.getComment();
 
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
 
-        return new MsgResponseDto(msg);
+        return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
 
     }
 
