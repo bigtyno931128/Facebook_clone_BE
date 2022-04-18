@@ -6,6 +6,7 @@ import com.best2team.facebook_clone_be.dto.CommentResponseDto;
 import com.best2team.facebook_clone_be.dto.MsgResponseDto;
 import com.best2team.facebook_clone_be.model.Comment;
 import com.best2team.facebook_clone_be.model.Post;
+import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.repository.CommentRepository;
 import com.best2team.facebook_clone_be.repository.PostRepository;
 import com.best2team.facebook_clone_be.repository.UserRepository;
@@ -41,8 +42,10 @@ public class CommentService {
 
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
+        User user = userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new);
+        CommentResponseDto commentResponseDto = new CommentResponseDto(requestDto,user,comment);
 
-        return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
+        return commentResponseDto;
 
     }
 
