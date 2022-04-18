@@ -18,7 +18,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.frameoptions.StaticAllowFromStrategy;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,7 +69,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
 
         // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
-        http
+        http.headers().frameOptions().disable()
+                .and()
                 .cors();
 
         /*
@@ -126,10 +130,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
+        skipPathList.add("GET,/stomp");
+        skipPathList.add("GET,/stomp/**");
 
 //        skipPathList.add("POST,/api/board/photo");
 //        skipPathList.add("POST,/api/board/regist");
-
         // 회원 관리 API 허용
 //        skipPathList.add("GET,/user/**");
         skipPathList.add("POST,/user/signup");
