@@ -6,7 +6,6 @@ import com.best2team.facebook_clone_be.dto.CommentResponseDto;
 import com.best2team.facebook_clone_be.dto.MsgResponseDto;
 import com.best2team.facebook_clone_be.model.Comment;
 import com.best2team.facebook_clone_be.model.Post;
-import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.repository.CommentRepository;
 import com.best2team.facebook_clone_be.repository.PostRepository;
 import com.best2team.facebook_clone_be.repository.UserRepository;
@@ -29,23 +28,23 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final Validator validator;
-
+    
     //댓글 작성
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
 
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(IllegalArgumentException::new);
-
-        validator.emptyComment(requestDto);
+        System.out.println(post);
+        Validator.emptyComment(requestDto);
 
         String content = requestDto.getComment();
 
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
-        User user = userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new);
-        CommentResponseDto commentResponseDto = new CommentResponseDto(requestDto,user,comment);
 
-        return commentResponseDto;
+
+        return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),
+                userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
 
     }
 
@@ -88,7 +87,7 @@ public class CommentService {
 
     public Page<CommentResponseDto> getCommentList(Long postid, int pageno) {
 
-        List<Comment> commentList= commentRepository.findAllByPost(postRepository.findById(postid).orElseThrow(IllegalArgumentException::new));
+        List<Comment> commentList= commentRepository.findAllByPostOrderByCreatedAtDesc(postRepository.findById(postid).orElseThrow(IllegalArgumentException::new));
         Pageable pageable = getPageable(pageno);
 
         List<CommentResponseDto> commentPageList = new ArrayList<>();

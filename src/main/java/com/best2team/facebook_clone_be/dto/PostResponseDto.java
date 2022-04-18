@@ -14,5 +14,6 @@ public class PostResponseDto {
     public PostResponseDto(Page<PostListDto> postDtoList) {
         this.postList= postDtoList.getContent();
         this.totalPage= postDtoList.getTotalPages();
+
     }
 }

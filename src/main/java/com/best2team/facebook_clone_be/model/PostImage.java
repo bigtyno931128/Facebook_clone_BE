@@ -21,8 +21,17 @@ public class PostImage {
     @Column(nullable = false)
     private String fileName;
 
+//    public PostImage(ImageDto imageDto) {
+//        this.postImageUrl=imageDto.getImageUrl();
+//        this.fileName = imageDto.getFileName();
+//    }
+
     public PostImage(ImageDto imageDto) {
-        this.postImageUrl=imageDto.getImageUrl();
         this.fileName = imageDto.getFileName();
+        try {
+            this.postImageUrl = imageDto.getImageUrl();
+        }catch (NullPointerException e){
+            this.postImageUrl = "없음";
+        }
     }
 }
