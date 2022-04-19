@@ -3,6 +3,7 @@ package com.best2team.facebook_clone_be.security.jwt;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.NoSuchElementException;
 
 @Component

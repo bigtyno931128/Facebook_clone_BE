@@ -1,23 +1,30 @@
 package com.best2team.facebook_clone_be.controller;
 
+import com.best2team.facebook_clone_be.dto.LoginUserListDto;
 import com.best2team.facebook_clone_be.dto.SignupRequestDto;
 import com.best2team.facebook_clone_be.dto.UserResponseDto;
 
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.service.UserService;
+import com.best2team.facebook_clone_be.websocket.repository.ChatRoomRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class UserRestController {
     private final UserService userService;
+    private final ChatRoomRepository chatRoomRepository;
+
     @Autowired
-    public UserRestController(UserService userService){
+    public UserRestController(UserService userService, ChatRoomRepository chatRoomRepository){
         this.userService = userService;
+        this.chatRoomRepository = chatRoomRepository;
     }
 
     // 회원가입
@@ -36,6 +43,11 @@ public class UserRestController {
     @PostMapping("/api/user/image")
     public void registImage(@RequestParam("image") MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
         userService.registImage(file, userDetails);
+    }
+
+    @GetMapping("/api/user/loginlist")
+    public LoginUserListDto loginList(){
+        return new LoginUserListDto(chatRoomRepository.loginList());
     }
 
 

@@ -1,4 +1,4 @@
-package com.best2team.facebook_clone_be.security;
+package com.best2team.facebook_clone_be.security.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

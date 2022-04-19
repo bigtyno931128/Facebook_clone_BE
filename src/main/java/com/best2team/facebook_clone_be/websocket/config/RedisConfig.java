@@ -1,4 +1,4 @@
-package com.best2team.facebook_clone_be.websocket;
+package com.best2team.facebook_clone_be.websocket.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

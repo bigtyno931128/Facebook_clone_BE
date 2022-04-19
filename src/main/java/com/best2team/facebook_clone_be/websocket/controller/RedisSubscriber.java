@@ -1,6 +1,6 @@
-package com.best2team.facebook_clone_be.websocket;
+package com.best2team.facebook_clone_be.websocket.controller;
 
-import com.best2team.facebook_clone_be.dto.ChatMessageDto;
+import com.best2team.facebook_clone_be.websocket.model.ChatMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +27,8 @@ public class RedisSubscriber implements MessageListener {
         try {
             // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            System.out.println(publishMessage);
             // ChatMessage 객채로 맵핑
-            ChatMessageDto roomMessage = objectMapper.readValue(publishMessage, ChatMessageDto.class);
+            ChatMessage roomMessage = objectMapper.readValue(publishMessage, ChatMessage.class);
             // Websocket 구독자에게 채팅 메시지 Send
             messagingTemplate.convertAndSend("/sub/chat/room/" + roomMessage.getRoomId(), roomMessage);
         } catch (Exception e) {

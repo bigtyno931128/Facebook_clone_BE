@@ -1,4 +1,4 @@
-package com.best2team.facebook_clone_be.security;
+package com.best2team.facebook_clone_be.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
