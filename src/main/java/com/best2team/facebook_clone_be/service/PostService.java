@@ -51,6 +51,7 @@ public class PostService {
 
         } catch (Exception e) {
             String msg = "게시글 작성 XXX";
+
             return new MsgResponseDto(msg);
         }
     }
@@ -132,6 +133,7 @@ public class PostService {
         //받아온 username 으로 이 유저가 작성한 게시물 리스트 반환.
         List<Post> postList = postRepository.findAllByUserOrderByCreatedAt(user);
         Pageable pageable = getPageable(i);
+
         List<PostListDto> postListDto = new ArrayList<>();
         forpostList(postList, postListDto, userDetails);
 

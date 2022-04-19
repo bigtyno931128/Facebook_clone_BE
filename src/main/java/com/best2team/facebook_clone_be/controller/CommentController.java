@@ -44,7 +44,7 @@ public class CommentController {
 
     // 댓글 삭제하기
     @DeleteMapping("/api/comment/{commentid}")
-    public MsgResponseDto deleteComment(@PathVariable Long commentid, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.deleteComment(commentid,userDetails);
+    public void deleteComment(@PathVariable Long commentid, @AuthenticationPrincipal UserDetailsImpl userDetails){
+         commentService.deleteComment(commentid,userDetails);
     }
 }

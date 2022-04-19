@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthFailureHandler implements AuthenticationFailureHandler {
+public class FormLoginFailHandler implements AuthenticationFailureHandler {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override

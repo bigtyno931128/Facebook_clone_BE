@@ -10,7 +10,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import java.io.IOException;
+
 
 @RestController
 public class PostController {
@@ -43,7 +47,9 @@ public class PostController {
 
     //특정 유저 게시글 조회
     @GetMapping("/api/post/{username}/{pageno}")
-    public PostResponseDto getMyPage(@PathVariable String username ,@PathVariable int pageno,@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public PostResponseDto getMyPage(@PathVariable String username ,@PathVariable int pageno,@AuthenticationPrincipal UserDetailsImpl userDetails) throws UnsupportedEncodingException {
+        username = URLDecoder.decode(username, "UTF-8");
+        System.out.println(username);
         return new PostResponseDto(postService.getMyPage(pageno-1,username,userDetails));
     }
 

@@ -13,9 +13,12 @@ import java.util.List;
 public class CommentListDto {
     private List<CommentResponseDto> comments;
     private int totalPage;
+    private int currentPage;
 
     public CommentListDto(Page<CommentResponseDto> page) {
         this.comments = page.getContent();
         this.totalPage = page.getTotalPages();
+        this.currentPage = page.getNumber();
+
     }
 }
