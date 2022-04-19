@@ -15,6 +15,7 @@ public class UserResponseDto {
     private String userImage;
     private boolean isLogin;
 
+    //islogin
     public UserResponseDto(UserDetailsImpl userDetails){
         this.userId = userDetails.getId();
         this.userEmail = userDetails.getUser().getUserEmail();
@@ -28,4 +29,8 @@ public class UserResponseDto {
 
     }
 
+    //userImage
+    public UserResponseDto(String imageUrl) {
+        this.userImage = imageUrl;
+    }
 }

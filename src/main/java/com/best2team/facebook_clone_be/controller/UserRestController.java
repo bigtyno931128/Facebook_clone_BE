@@ -33,9 +33,9 @@ public class UserRestController {
         return new UserResponseDto(userDetails);
     }
 
-    @PostMapping("/api/user/image")
-    public void registImage(@RequestParam("image") MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
-        userService.registImage(file, userDetails);
+    @PutMapping("/api/user/image")
+    public UserResponseDto registImage(@RequestParam("image") MultipartFile file, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException{
+        return userService.registImage(file, userDetails);
     }
 
 
