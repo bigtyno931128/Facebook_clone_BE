@@ -17,14 +17,12 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(ChatMessage message) {
-        System.out.println(message);
         Long min = Math.min(message.getMessageSender(), message.getMessageRecevier());
         Long max = Math.max(message.getMessageRecevier(), message.getMessageSender());
         message.setRoomId(min+"to"+max);
-
         chatRoomRepository.saveMessage(message);
         // recevier 알림 발행
-        redisPublisher.publish(chatRoomRepository.getTopic(Long.toString(message.getMessageRecevier())), message);
+//        redisPublisher.publish(chatRoomRepository.getTopic(Long.toString(message.getMessageRecevier())), message);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);
     }

@@ -24,7 +24,7 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.SUBSCRIBE == accessor.getCommand()) { // 채팅룸 구독요청
             // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
             String roomId = SocketUtil.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
-            System.out.println(roomId);
+
             if(!roomId.contains("to")) {
                 // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.
                 String sessionId = (String) message.getHeaders().get("simpSessionId");

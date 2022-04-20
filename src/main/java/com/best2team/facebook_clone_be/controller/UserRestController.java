@@ -47,6 +47,7 @@ public class UserRestController {
 
     @GetMapping("/api/user/loginlist")
     public List<User> loginList(){
+        System.out.println("컨트롤러");
         return chatRoomRepository.loginList();
     }
 

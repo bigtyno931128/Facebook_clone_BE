@@ -2,10 +2,8 @@ package com.best2team.facebook_clone_be.websocket.repository;
 
 import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.repository.UserRepository;
-import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.websocket.controller.RedisSubscriber;
 import com.best2team.facebook_clone_be.websocket.model.ChatMessage;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.HashOperations;
@@ -69,7 +67,6 @@ public class ChatRoomRepository {
     //현재 로그인 유저 추가
     public void saveLoginUser(String sessionId, String userId){
         loginUser.put(LOGIN_USERS,sessionId,userId);
-        System.out.println(sessionId + "             " + userId);
     }
 
     //현재 로그인 유저 제거
@@ -82,7 +79,6 @@ public class ChatRoomRepository {
         List<User> loginList = new ArrayList<>();
 
         for(String userId : loginUser.values(LOGIN_USERS)){
-            System.out.println(userId);
             loginList.add(userRepository.findById(Long.parseLong(userId)).orElseThrow(IllegalArgumentException::new));
         }
 
