@@ -1,6 +1,6 @@
-package com.best2team.facebook_clone_be.security;
+package com.best2team.facebook_clone_be.security.config;
 
-
+import com.best2team.facebook_clone_be.security.FilterSkipMatcher;
 import com.best2team.facebook_clone_be.security.filter.FormLoginFilter;
 import com.best2team.facebook_clone_be.security.filter.JwtAuthFilter;
 import com.best2team.facebook_clone_be.security.handler.AuthFailureHandler;
@@ -19,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -72,7 +71,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
-        // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
         http.headers().frameOptions().disable()
                 .and()
                 .cors();
@@ -141,6 +139,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         skipPathList.add("POST,/h2-console/**");
         skipPathList.add("GET,/stomp");
         skipPathList.add("GET,/stomp/**");
+        skipPathList.add("GET,/stomp/**/**");
 
 //        skipPathList.add("POST,/api/board/photo");
 //        skipPathList.add("POST,/api/board/regist");

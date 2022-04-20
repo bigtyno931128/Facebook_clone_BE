@@ -2,10 +2,13 @@ package com.best2team.facebook_clone_be.websocket.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 @Getter
 @Setter
+@ToString
 public class ChatMessage implements Serializable {
 
     private static final long serialVersionUID = 6494678977089006639L;

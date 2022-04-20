@@ -1,11 +1,9 @@
 package com.best2team.facebook_clone_be.websocket.controller;
 
-import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.websocket.model.ChatMessage;
 import com.best2team.facebook_clone_be.websocket.repository.ChatRoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -18,16 +16,13 @@ public class ChatController {
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessage message, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public void message(ChatMessage message) {
+        System.out.println(message);
         Long min = Math.min(message.getMessageSender(), message.getMessageRecevier());
         Long max = Math.max(message.getMessageRecevier(), message.getMessageSender());
         message.setRoomId(min+"to"+max);
 
-        if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
-            chatRoomRepository.enterChatRoom(message, userDetails);
-        }
-
-        chatRoomRepository.saveMessage(message, userDetails);
+        chatRoomRepository.saveMessage(message);
         // recevier 알림 발행
         redisPublisher.publish(chatRoomRepository.getTopic(Long.toString(message.getMessageRecevier())), message);
         // Websocket에 발행된 메시지를 redis로 발행한다(publish)

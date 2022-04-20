@@ -23,15 +23,13 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         final UserDetailsImpl userDetails = ((UserDetailsImpl) authentication.getPrincipal());
         // Token 생성
         final String token = JwtTokenUtils.generateJwtToken(userDetails);
-
         chatRoomRepository.enterChatRoom(Long.toString(userDetails.getUser().getUserId()));
         try {
             response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
-            String data ="로그인이 완료되었습니다.";
+            String data =Long.toString(userDetails.getUser().getUserId());
             String msg = new String (objectMapper.writeValueAsString(data).getBytes("UTF-8"), "ISO-8859-1");
             response.getOutputStream()
                     .println(msg);
-            response.addHeader("RoomId",Long.toString(userDetails.getUser().getUserId()));
             response.setStatus(HttpServletResponse.SC_OK);
         }catch (Exception e){
 

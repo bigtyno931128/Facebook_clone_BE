@@ -56,13 +56,4 @@ public class PostController {
         return new PostResponseDto(postService.getMyPage(pageno-1,username,userDetails));
     }
 
-
-    //특정 유저 게시글 조회
-    @GetMapping("/api/post/{username}/{pageno}")
-    public PostResponseDto getMyPage(@PathVariable String username ,@PathVariable int pageno,@AuthenticationPrincipal UserDetailsImpl userDetails) throws UnsupportedEncodingException {
-        username = URLDecoder.decode(username, "UTF-8");
-        System.out.println(username);
-        return new PostResponseDto(postService.getMyPage(pageno-1,username,userDetails));
-    }
-
 }

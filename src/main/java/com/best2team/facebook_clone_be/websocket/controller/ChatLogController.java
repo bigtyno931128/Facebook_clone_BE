@@ -1,10 +1,9 @@
 package com.best2team.facebook_clone_be.websocket.controller;
 
+import com.best2team.facebook_clone_be.dto.RoomRequestDto;
 import com.best2team.facebook_clone_be.websocket.repository.ChatRoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ChatLogController {
@@ -20,4 +19,12 @@ public class ChatLogController {
         chatRoomRepository.findMessage(roomid);
     }
 
+    @PostMapping("/chat/room")
+    public RoomRequestDto insertRoom(@RequestBody RoomRequestDto roomRequestDto){
+        Long min = Math.min(roomRequestDto.getSender(), roomRequestDto.getRecevier());
+        Long max = Math.max(roomRequestDto.getRecevier(), roomRequestDto.getSender());
+        roomRequestDto.setRoomId(min+"to"+max);
+        chatRoomRepository.enterChatRoom(min+"to"+max);
+        return roomRequestDto;
+    }
 }
