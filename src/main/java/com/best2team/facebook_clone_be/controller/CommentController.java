@@ -26,12 +26,7 @@ public class CommentController {
        return commentService.createComment(requestDto,userDetails);
 
     }
-    
-//    //댓글 리스트 조회
-//    @GetMapping("/api/comment/{postid}")
-//    public List<CommentResponseDto> getCommentList(@PathVariable long postid){
-//        return commentService.getCommentList(postid);
-//    }
+
 
 
     //댓글 리스트 조회
@@ -49,7 +44,7 @@ public class CommentController {
 
     // 댓글 삭제하기
     @DeleteMapping("/api/comment/{commentid}")
-    public MsgResponseDto deleteComment(@PathVariable Long commentid, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.deleteComment(commentid,userDetails);
+    public void deleteComment(@PathVariable Long commentid, @AuthenticationPrincipal UserDetailsImpl userDetails){
+         commentService.deleteComment(commentid,userDetails);
     }
 }

@@ -8,6 +8,7 @@ import com.best2team.facebook_clone_be.repository.*;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.utils.S3.S3Uploader;
 import com.best2team.facebook_clone_be.utils.Validator;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,12 +42,16 @@ public class PostService {
             User user = userRepository.findById(userDetails.getUser().getUserId()).orElse(null);
 
             PostImage postImage = new PostImage(s3Uploader.upload(multipartFile, "static"));
+            System.out.println(postImage);
+            //System.out.println(postImage.getPostImageUrl());
             Post post = new Post(content, user, imageRepository.save(postImage));
             postRepository.save(post);
             String msg = "게시글 작성이 성공되었습니다.";
             return new MsgResponseDto(msg);
+
         } catch (Exception e) {
             String msg = "게시글 작성 XXX";
+
             return new MsgResponseDto(msg);
         }
     }
@@ -78,16 +83,21 @@ public class PostService {
             String postImageUrl = "없음";
 
             if (post.getPostImage().getPostImageUrl() != null){
-                postImageUrl = post.getPostImage().getPostImageUrl();
+                userImageUrl = post.getPostImage().getPostImageUrl();
             }
             if (post.getUser().getUserImage() != null){
                 userImageUrl = post.getUser().getUserImage().getImageUrl();
             };
+            Long postImageId = post.getPostImage().getPostImageId();
 
-            PostListDto postDto = new PostListDto(post.getPostId(), post.getContent(), like, commentRepository.countAllByPost(post),
-                    post.getCreatedAt(), userImageUrl, imageRepository.findById(post.getPostId()).orElseThrow(IllegalArgumentException::new).getPostImageId(),
-                    postImageUrl, post.getUser().getUserName(), post.getUser().getUserId(),
-                    likeRepository.findByPostIdAndUserId(post.getPostId(), userDetails.getUser().getUserId()).isPresent());
+            PostListDto postDto = new PostListDto(post.getPostId(),post.getContent(),like,commentRepository.countAllByPost(post),post.getCreatedAt(),userImageUrl,postImageUrl,post.getUser().getUserName(),post.getUser().getUserId(),
+                    likeRepository.findByPostIdAndUserId(post.getPostId(), userDetails.getUser().getUserId()).isPresent(),postImageId);
+
+
+//            PostListDto postDto = new PostListDto(post.getPostId(), post.getContent(), like, commentRepository.countAllByPost(post),
+//                    post.getCreatedAt(), userImageUrl, imageRepository.findById(post.getPostId()).orElseThrow(IllegalArgumentException::new).getPostImageId(),
+//                    postImageUrl, post.getUser().getUserName(), post.getUser().getUserId(),
+//                    likeRepository.findByPostIdAndUserId(post.getPostId(), userDetails.getUser().getUserId()).isPresent());
 
             postListDto.add(postDto);
         }
@@ -99,11 +109,11 @@ public class PostService {
 
         Post post = postRepository.findById(postid).orElseThrow(IllegalArgumentException::new);
 
-        postImageRepository.deleteById(post.getPostImage().getPostImageId());
+        //postImageRepository.deleteById(post.getPostImage().getPostImageId());
         PostImage postImage = new PostImage(s3Uploader.upload(multipartFile, "static"));
-
-        post.update(content,postImage);
         postImageRepository.save(postImage);
+        post.update(content,postImage);
+
         return new PostEditResponseDto(postid,content,postImage.getPostImageUrl());
     }
 
@@ -115,6 +125,22 @@ public class PostService {
         commentRepository.deleteAllByPost(postRepository.findById(postid).orElseThrow(IllegalArgumentException::new));
         postRepository.deleteById(postid);
         return new MsgResponseDto("게시글 삭제가 완료되었습니다");
+    }
+
+    //특정 유저로 게시글 조회 .
+    public Page<PostListDto> getMyPage(int i, String username,UserDetailsImpl userDetails) {
+        User user =userRepository.findByUserName(username).orElseThrow(IllegalArgumentException::new);
+        //받아온 username 으로 이 유저가 작성한 게시물 리스트 반환.
+        List<Post> postList = postRepository.findAllByUserOrderByCreatedAt(user);
+        Pageable pageable = getPageable(i);
+
+        List<PostListDto> postListDto = new ArrayList<>();
+        forpostList(postList, postListDto, userDetails);
+
+        int start = i * 7;
+        int end = Math.min((start + 7), postList.size());
+
+        return validator.overPages(postListDto, start, end, pageable, i);
     }
 }
 

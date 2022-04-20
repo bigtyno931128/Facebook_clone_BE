@@ -1,5 +1,6 @@
 package com.best2team.facebook_clone_be.dto;
 
+import com.best2team.facebook_clone_be.model.Comment;
 import com.best2team.facebook_clone_be.model.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,14 @@ public class CommentResponseDto {
         this.userName = userName;
         this.userId = userId;
         this.createdAt = createdAt;
+    }
+
+    public CommentResponseDto(CommentRequestDto requestDto, User user, Comment comment) {
+        this.commentId = comment.getCommentId();
+        this.postId = requestDto.getPostId();
+        this.content = requestDto.getComment();
+        this.userName = user.getUserName();
+        this.userId = user.getUserId();
+        this.createdAt = comment.getCreatedAt();
     }
 }

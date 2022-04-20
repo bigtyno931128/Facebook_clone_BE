@@ -10,9 +10,11 @@ import java.util.List;
 public class PostResponseDto {
     private List<PostListDto> postList;
     private int totalPage;
+    private int currentPage;
 
     public PostResponseDto(Page<PostListDto> postDtoList) {
         this.postList= postDtoList.getContent();
         this.totalPage= postDtoList.getTotalPages();
+        this.currentPage = postDtoList.getNumber();
     }
 }

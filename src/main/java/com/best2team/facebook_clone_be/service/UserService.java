@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Service
@@ -48,7 +49,7 @@ public class UserService {
         userRepository.save(new User(signupRequestDto));
         return msg;
     }
-
+    //@Transactional
     public void registImage(MultipartFile file, UserDetailsImpl userDetails) throws IOException {
         Long userId = userDetails.getUser().getUserId();
         User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);

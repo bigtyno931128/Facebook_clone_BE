@@ -108,8 +108,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager());
         formLoginFilter.setFilterProcessesUrl("/user/login");
         formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
+        formLoginFilter.setAuthenticationFailureHandler(formLoginFailHandler());
         formLoginFilter.afterPropertiesSet();
         return formLoginFilter;
+    }
+
+    @Bean
+    public FormLoginFailHandler formLoginFailHandler(){
+        return new FormLoginFailHandler();
     }
 
     @Bean
