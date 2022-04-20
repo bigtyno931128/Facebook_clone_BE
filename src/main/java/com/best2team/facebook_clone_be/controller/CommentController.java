@@ -30,9 +30,10 @@ public class CommentController {
 
     //댓글 리스트 조회
     @GetMapping("/api/comment/{postid}/{pageno}")
-    public ResponseEntity<CommentListDto> getCommentList(@PathVariable Long postid,@PathVariable int pageno){
+    public CommentListDto getCommentList(@PathVariable Long postid,@PathVariable int pageno){
         CommentListDto commentListDto = new CommentListDto(commentService.getCommentList(postid, pageno-1));
-        return ResponseEntity.ok(commentListDto);
+
+        return commentListDto;
     }
 
     // 댓글 수정하기

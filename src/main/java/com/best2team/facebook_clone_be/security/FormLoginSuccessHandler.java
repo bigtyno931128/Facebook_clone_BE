@@ -1,7 +1,10 @@
 package com.best2team.facebook_clone_be.security;
 
+import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.security.jwt.JwtTokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,8 @@ public class FormLoginSuccessHandler extends SavedRequestAwareAuthenticationSucc
         final String token = JwtTokenUtils.generateJwtToken(userDetails);
         try {
             response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + token);
+            User user = userDetails.getUser();
+            ResponseEntity<User> responseEntity =new ResponseEntity<>(user, HttpStatus.OK);
             //response.getWriter().write("로그인이 완료되었습니다.");
             String data ="로그인이 완료되었습니다.";
             String msg = new String (objectMapper.writeValueAsString(data).getBytes("UTF-8"), "ISO-8859-1");

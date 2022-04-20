@@ -53,4 +53,10 @@ public class PostController {
         return new PostResponseDto(postService.getMyPage(pageno-1,username,userDetails));
     }
 
+//    @GetMapping("/api/posts/{username}")
+//    public PostResponseDto getPostList(@PathVariable String username ,@AuthenticationPrincipal UserDetailsImpl userDetails) throws UnsupportedEncodingException {
+//        username = URLDecoder.decode(username, "UTF-8");
+//        System.out.println(username);
+//        return new PostResponseDto(postService.getPostList(username,userDetails));
+//    }
 }

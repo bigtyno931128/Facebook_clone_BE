@@ -43,11 +43,9 @@ public class CommentService {
 
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
-
-
-        return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),
-                userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
-
+        return new CommentResponseDto(requestDto,userDetails.getUser(),comment);
+//        return new CommentResponseDto(requestDto.getPostId(),comment.getCommentId(),comment.getContent(),
+//                userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
     }
 
     //댓글 수정
@@ -59,19 +57,15 @@ public class CommentService {
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다!")
         );
         if(!Objects.equals(comment.getUserId(), userDetails.getId())){
-
             throw new IllegalArgumentException("댓글 수정 권한이 없습니다.");
         }
-
         try {
             Validator.sameComment(requestDto);
-
         } catch (IllegalArgumentException e) {
             //msg = e.getMessage();
             //return new MsgResponseDto(msg);
         }
         comment.update(requestDto);
-
         //return new MsgResponseDto(msg);
     }
 

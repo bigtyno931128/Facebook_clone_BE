@@ -34,6 +34,7 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final PostImageRepository postImageRepository;
+    private final UserImageRepository userImageRepository;
 
     @Transactional
     public MsgResponseDto writePost(UserDetailsImpl userDetails, MultipartFile multipartFile, String content) throws IOException {
@@ -83,7 +84,7 @@ public class PostService {
             String postImageUrl = "없음";
 
             if (post.getPostImage().getPostImageUrl() != null){
-                userImageUrl = post.getPostImage().getPostImageUrl();
+                postImageUrl = post.getPostImage().getPostImageUrl();
             }
             if (post.getUser().getUserImage() != null){
                 userImageUrl = post.getUser().getUserImage().getImageUrl();
@@ -93,15 +94,10 @@ public class PostService {
             PostListDto postDto = new PostListDto(post.getPostId(),post.getContent(),like,commentRepository.countAllByPost(post),post.getCreatedAt(),userImageUrl,postImageUrl,post.getUser().getUserName(),post.getUser().getUserId(),
                     likeRepository.findByPostIdAndUserId(post.getPostId(), userDetails.getUser().getUserId()).isPresent(),postImageId);
 
-
-//            PostListDto postDto = new PostListDto(post.getPostId(), post.getContent(), like, commentRepository.countAllByPost(post),
-//                    post.getCreatedAt(), userImageUrl, imageRepository.findById(post.getPostId()).orElseThrow(IllegalArgumentException::new).getPostImageId(),
-//                    postImageUrl, post.getUser().getUserName(), post.getUser().getUserId(),
-//                    likeRepository.findByPostIdAndUserId(post.getPostId(), userDetails.getUser().getUserId()).isPresent());
-
             postListDto.add(postDto);
         }
     }
+
 
 
     @Transactional
@@ -142,5 +138,9 @@ public class PostService {
 
         return validator.overPages(postListDto, start, end, pageable, i);
     }
+
+//    public Page<PostListDto> getPostList(String username, UserDetailsImpl userDetails) {
+//
+//    }
 }
 
