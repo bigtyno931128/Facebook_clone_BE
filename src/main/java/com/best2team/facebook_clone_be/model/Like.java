@@ -28,8 +28,8 @@ public class Like {
         this.userId = likeDto.getUserId();
     }
 
-    public Like(Long postId, Long id) {
-        this.postId = postId;
-        this.userId = id;
+    public Like(Long postid, Long id) {
+        this.postId=postid;
+        this.userId=id;
     }
 }

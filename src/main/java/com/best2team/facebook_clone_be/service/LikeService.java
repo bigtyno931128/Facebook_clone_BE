@@ -1,7 +1,6 @@
 package com.best2team.facebook_clone_be.service;
 
 import com.best2team.facebook_clone_be.dto.LikeDto;
-import com.best2team.facebook_clone_be.dto.LikeResponseDto;
 import com.best2team.facebook_clone_be.model.Like;
 import com.best2team.facebook_clone_be.repository.LikeRepository;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
@@ -9,7 +8,6 @@ import com.best2team.facebook_clone_be.utils.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 
@@ -17,28 +15,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class LikeService {
     private final LikeRepository likeRepository;
-    private final Validator validator;
 
     //좋아요
-    @Transactional
-    public LikeResponseDto like(Long postId, UserDetailsImpl userDetails){
-
-        //Like like = new Like(postId, userDetails.getId());
-        Like like = likeRepository.findByPostIdAndUserId(postId, userDetails.getId()).orElse(null);
-        LikeResponseDto likeResponseDto = new LikeResponseDto();
-        try {
+    public String like(Long postid, UserDetailsImpl userDetails){
+        Like like = likeRepository.findByPostIdAndUserId(postid,userDetails.getId()).orElse(null);
             if (like == null) {
-                Like saveLike = new Like(postId, userDetails.getId());
-                likeRepository.save(saveLike);
+                Like savelike = new Like(postid, userDetails.getId());
+                likeRepository.save(savelike);
+                return "true";
             } else {
                 likeRepository.deleteById(like.getLikeId());
+                return "false";
             }
-            likeResponseDto.setMsg(true);
-        }catch (Exception e ){
-            likeResponseDto.setMsg(false);
-        }
-        return likeResponseDto;
-    }
 
+    }
 
 }

@@ -1,9 +1,7 @@
 package com.best2team.facebook_clone_be.service;
 
-
-import com.best2team.facebook_clone_be.dto.ImageDto;
+import com.best2team.facebook_clone_be.dto.ProfileResponseDto;
 import com.best2team.facebook_clone_be.dto.SignupRequestDto;
-import com.best2team.facebook_clone_be.dto.UserResponseDto;
 import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.model.UserImage;
 import com.best2team.facebook_clone_be.repository.UserImageRepository;
@@ -16,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 
 @Service
@@ -28,12 +25,12 @@ public class UserService {
     private final UserImageRepository userImageRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, Validator validator, PasswordEncoder encoder, S3Uploader s3Uploader,UserImageRepository userImageRepository){
+    public UserService(UserRepository userRepository, Validator validator, PasswordEncoder encoder, S3Uploader s3Uploader, UserImageRepository userImageRepository){
         this.userRepository = userRepository;
         this.validator = validator;
         this.encoder = encoder;
         this.s3Uploader = s3Uploader;
-        this.userImageRepository =userImageRepository;
+        this.userImageRepository = userImageRepository;
     }
 
     // 회원가입
@@ -54,13 +51,12 @@ public class UserService {
         return msg;
     }
 
-    @Transactional
-    public UserResponseDto registImage(MultipartFile file, UserDetailsImpl userDetails) throws IOException {
+    public ProfileResponseDto registImage(MultipartFile file, UserDetailsImpl userDetails) throws IOException {
         Long userId = userDetails.getUser().getUserId();
         User user = userRepository.findById(userId).orElseThrow(IllegalArgumentException::new);
         UserImage userImage = new UserImage(s3Uploader.upload(file, "static"));
         userImageRepository.save(userImage);
         user.update(userImage);
-        return new UserResponseDto(userImage.getImageUrl());
+        return new ProfileResponseDto(userImage);
     }
 }

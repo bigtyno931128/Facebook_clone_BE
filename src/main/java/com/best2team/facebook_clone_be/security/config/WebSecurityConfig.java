@@ -1,11 +1,11 @@
-package com.best2team.facebook_clone_be.security.config;
+package com.best2team.facebook_clone_be.security;
 
 
-import com.best2team.facebook_clone_be.security.handler.CustomLogoutSuccessHandler;
-import com.best2team.facebook_clone_be.security.FilterSkipMatcher;
-import com.best2team.facebook_clone_be.security.handler.FormLoginSuccessHandler;
 import com.best2team.facebook_clone_be.security.filter.FormLoginFilter;
 import com.best2team.facebook_clone_be.security.filter.JwtAuthFilter;
+import com.best2team.facebook_clone_be.security.handler.AuthFailureHandler;
+import com.best2team.facebook_clone_be.security.handler.CustomLogoutSuccessHandler;
+import com.best2team.facebook_clone_be.security.handler.FormLoginSuccessHandler;
 import com.best2team.facebook_clone_be.security.jwt.HeaderTokenExtractor;
 import com.best2team.facebook_clone_be.security.provider.FormLoginAuthProvider;
 import com.best2team.facebook_clone_be.security.provider.JWTAuthProvider;
@@ -19,6 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -108,14 +109,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager());
         formLoginFilter.setFilterProcessesUrl("/user/login");
         formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
-        formLoginFilter.setAuthenticationFailureHandler(formLoginFailHandler());
+        formLoginFilter.setAuthenticationFailureHandler(authFailureHandler());
         formLoginFilter.afterPropertiesSet();
         return formLoginFilter;
-    }
-
-    @Bean
-    public FormLoginFailHandler formLoginFailHandler(){
-        return new FormLoginFailHandler();
     }
 
     @Bean
@@ -128,6 +124,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new FormLoginAuthProvider(encodePassword());
     }
 
+    @Bean
+    public AuthFailureHandler authFailureHandler() {
+        return new AuthFailureHandler();
+    }
 
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
@@ -144,6 +144,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //        skipPathList.add("POST,/api/board/photo");
 //        skipPathList.add("POST,/api/board/regist");
+
         // 회원 관리 API 허용
 //        skipPathList.add("GET,/user/**");
         skipPathList.add("POST,/user/signup");

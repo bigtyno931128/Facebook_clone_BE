@@ -32,18 +32,15 @@ public class CommentService {
     //댓글 작성
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
-
         Post post = postRepository.findById(requestDto.getPostId()).orElseThrow(
                 ()-> new IllegalArgumentException("게시글이 존재하지 않습니다!")
         );
-        System.out.println(post);
         Validator.emptyComment(requestDto);
 
         String content = requestDto.getComment();
 
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
-
 
         return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),
                 userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
@@ -53,42 +50,23 @@ public class CommentService {
     //댓글 수정
     @Transactional
     public void updateComment(long commentid, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
-
-        ///=String msg = "댓글 수정이 완료되었습니다.";
         Comment comment = commentRepository.findById(commentid).orElseThrow(
                 () -> new IllegalArgumentException("댓글이 존재하지 않습니다!")
         );
-        if(!Objects.equals(comment.getUserId(), userDetails.getId())){
-
-            throw new IllegalArgumentException("댓글 수정 권한이 없습니다.");
-        }
-
-        try {
-            Validator.sameComment(requestDto);
-
-        } catch (IllegalArgumentException e) {
-            //msg = e.getMessage();
-            //return new MsgResponseDto(msg);
-        }
         comment.update(requestDto);
-
-        //return new MsgResponseDto(msg);
     }
 
     //댓글 삭제
     public void deleteComment(long commentid, UserDetailsImpl userDetails) {
-
-        //String msg = "댓글 삭제가 완료되었습니다.";
         Comment comment = commentRepository.findById(commentid).orElseThrow(
                 ()-> new IllegalArgumentException("댓글이 존재하지 않습니다.!")
         );
         if(!Objects.equals(comment.getUserId(), userDetails.getId())){
 
-            throw new IllegalArgumentException("댓글 삭제 권한이 없습니다.");
+            throw new IllegalArgumentException("댓글 삭제가 실패하였습니다.");
         }
 
         commentRepository.deleteById(commentid);
-        //return new MsgResponseDto(msg);
     }
 
 

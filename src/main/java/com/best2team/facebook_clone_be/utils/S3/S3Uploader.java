@@ -48,6 +48,14 @@ public class S3Uploader {
         amazonS3Client.deleteObject(request);
     }
 
+    public void deletePostImage(Long imageId){
+        System.out.println("++++");
+        String fileName = postImageRepository.findById(imageId).orElseThrow(IllegalArgumentException::new).getFileName();
+
+        DeleteObjectRequest request = new DeleteObjectRequest(bucket, fileName);
+        amazonS3Client.deleteObject(request);
+    }
+
     // S3로 파일 업로드하기
     private ImageDto upload(File uploadFile, String dirName) {
         System.out.println(dirName);
