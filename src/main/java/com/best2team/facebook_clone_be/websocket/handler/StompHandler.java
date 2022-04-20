@@ -23,12 +23,12 @@ public class StompHandler implements ChannelInterceptor {
             // header정보에서 구독 destination정보를 얻고, roomId를 추출한다.
             String roomId = SocketUtil.getRoomId(Optional.ofNullable((String) message.getHeaders().get("simpDestination")).orElse("InvalidRoomId"));
             if(!roomId.contains("to")) {
-                // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.(나중에 특정 세션이 어떤 채팅방에 들어가 있는지 알기 위함)
+                // 채팅방에 들어온 클라이언트 sessionId를 roomId와 맵핑해 놓는다.
                 String sessionId = (String) message.getHeaders().get("simpSessionId");
                 chatRoomRepository.saveLoginUser(sessionId, roomId);
             }
         } else if (StompCommand.DISCONNECT == accessor.getCommand()) { // Websocket 연결 종료
-            //
+            //sessindId를 통해 현재 접속중인 유저 목록에서 삭제 시킨다.
             String sessionId = (String) message.getHeaders().get("simpSessionId");
             chatRoomRepository.deleteLoginUser(sessionId);
 

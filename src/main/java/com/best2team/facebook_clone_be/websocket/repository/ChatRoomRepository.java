@@ -24,6 +24,7 @@ public class ChatRoomRepository {
     // Redis
     private static final String CHAT_LOGS = "CHAT_LOG";
     private static final String LOGIN_USERS = "LOGIN_USER";
+    private List<ChatMessage> messages;
     private final RedisTemplate<String, Object> redisTemplate;
     private ListOperations<String, Object> opsChatLog;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
@@ -39,12 +40,19 @@ public class ChatRoomRepository {
 
     // 메세지 저장
     public void saveMessage(ChatMessage message, UserDetailsImpl userDetails) {
-        message.setSender(userDetails.getUser().getUserId());
+        message.setMessageSender(userDetails.getUser().getUserId());
 
         opsChatLog.rightPush(message.getRoomId(), message);
     }
 
-
+    // 메세지 리스트 불러오기
+    public List<ChatMessage> findMessage(String roomId){
+        messages = new ArrayList<>();
+        for(int i = 0; i<opsChatLog.size(roomId); i++){
+            messages.add((ChatMessage) opsChatLog.index(roomId, i));
+        }
+        return messages;
+    }
 
     //현재 로그인 유저 추가
     public void saveLoginUser(String sessionId, String userId){

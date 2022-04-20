@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class ChatController {
-
     private final RedisPublisher redisPublisher;
     private final ChatRoomRepository chatRoomRepository;
 
@@ -20,16 +19,18 @@ public class ChatController {
      */
     @MessageMapping("/chat/message")
     public void message(ChatMessage message, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long min = Math.min(message.getSender(), message.getRecevier());
-        Long max = Math.max(message.getRecevier(), message.getSender());
+        Long min = Math.min(message.getMessageSender(), message.getMessageRecevier());
+        Long max = Math.max(message.getMessageRecevier(), message.getMessageSender());
         message.setRoomId(min+"to"+max);
 
         if (ChatMessage.MessageType.ENTER.equals(message.getType())) {
             chatRoomRepository.enterChatRoom(message, userDetails);
         }
 
-        // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         chatRoomRepository.saveMessage(message, userDetails);
+        // recevier 알림 발행
+        redisPublisher.publish(chatRoomRepository.getTopic(Long.toString(message.getMessageRecevier())), message);
+        // Websocket에 발행된 메시지를 redis로 발행한다(publish)
         redisPublisher.publish(chatRoomRepository.getTopic(message.getRoomId()), message);
     }
 }
