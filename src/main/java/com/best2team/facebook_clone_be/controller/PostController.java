@@ -9,14 +9,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.List;
-
 
 @RestController
 public class PostController {
@@ -55,5 +51,4 @@ public class PostController {
         username = URLDecoder.decode(username, "UTF-8");
         return new PostResponseDto(postService.getMyPage(pageno-1,username,userDetails));
     }
-
 }

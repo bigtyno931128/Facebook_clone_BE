@@ -1,6 +1,9 @@
 package com.best2team.facebook_clone_be.controller;
 
-import com.best2team.facebook_clone_be.dto.*;
+import com.best2team.facebook_clone_be.dto.CommentListDto;
+import com.best2team.facebook_clone_be.dto.CommentRequestDto;
+import com.best2team.facebook_clone_be.dto.CommentResponseDto;
+import com.best2team.facebook_clone_be.dto.Message;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
-
-@RequiredArgsConstructor
+@RequiredArgsConstructor // final로 선언된 멤버 변수를 자동으로 생성합니다.
 @RestController
 public class CommentController {
 
@@ -20,7 +22,7 @@ public class CommentController {
     //댓글 등록
     @PostMapping("/api/comment")
     public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return commentService.createComment(requestDto,userDetails);
+       return commentService.createComment(requestDto,userDetails);
 
     }
 

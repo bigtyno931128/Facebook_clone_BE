@@ -4,6 +4,7 @@ import com.best2team.facebook_clone_be.dto.*;
 import com.best2team.facebook_clone_be.model.Post;
 import com.best2team.facebook_clone_be.model.PostImage;
 import com.best2team.facebook_clone_be.model.User;
+import com.best2team.facebook_clone_be.model.UserImage;
 import com.best2team.facebook_clone_be.repository.*;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.utils.S3.S3Uploader;
@@ -20,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,26 +35,34 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final PostImageRepository postImageRepository;
+    private final UserImageRepository userImageRepository;
 
     @Transactional
     public PostListDto writePost(UserDetailsImpl userDetails, MultipartFile multipartFile, String content) throws IOException {
 
         validator.sameContent(content == null, "내용을 입력하세요");
         User user = userRepository.findById(userDetails.getUser().getUserId()).orElse(null);
+        System.out.println(user.getUserName());
 
         PostImage postImage = new PostImage(s3Uploader.upload(multipartFile, "static"));
         Post post = new Post(content, user, postImageRepository.save(postImage));
         postRepository.save(post);
 
-        String userImageUrl = "없음";
+        Optional<UserImage> userImage = userImageRepository.findById(userDetails.getId());
+        UserImage userImage1 = userImageRepository.findById(userDetails.getId()).orElse(null);
+
+        String userImageUrl;
         String postImageUrl = "없음";
 
         if (post.getPostImage().getPostImageUrl() != null){
             postImageUrl = post.getPostImage().getPostImageUrl();
         }
-        if (post.getUser().getUserImage() != null){
-            userImageUrl = post.getUser().getUserImage().getImageUrl();
-        };
+        if (userImage.isPresent()){
+            userImageUrl = userImage1.getImageUrl();
+            System.out.println(userImage1.getImageUrl());
+        }else{
+            userImageUrl = "없음";
+        }
 
         int like = likeRepository.countAllByPostId(post.getPostId());
 

@@ -1,14 +1,10 @@
 package com.best2team.facebook_clone_be.service;
 
-import com.best2team.facebook_clone_be.dto.LikeDto;
 import com.best2team.facebook_clone_be.model.Like;
 import com.best2team.facebook_clone_be.repository.LikeRepository;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
-import com.best2team.facebook_clone_be.utils.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

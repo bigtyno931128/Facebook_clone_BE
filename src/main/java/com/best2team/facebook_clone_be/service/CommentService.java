@@ -42,6 +42,7 @@ public class CommentService {
         Comment comment = new Comment(content, userDetails.getUser().getUserId(), post);
         commentRepository.save(comment);
 
+
         return new CommentResponseDto(post.getPostId(),comment.getCommentId(),comment.getContent(),
                 userRepository.findById(comment.getUserId()).orElseThrow(IllegalArgumentException::new).getUserName(),comment.getUserId(),comment.getCreatedAt());
 
