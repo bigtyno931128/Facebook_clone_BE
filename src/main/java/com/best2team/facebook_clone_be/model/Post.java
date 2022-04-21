@@ -3,7 +3,9 @@ package com.best2team.facebook_clone_be.model;
 import com.best2team.facebook_clone_be.utils.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -18,9 +20,12 @@ public class Post extends Timestamped {
     @JoinColumn(name = "postImageId")
     private PostImage postImage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
 
     @Column(nullable = false)
     private String content;

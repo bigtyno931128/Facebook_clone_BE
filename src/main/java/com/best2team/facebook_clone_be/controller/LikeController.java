@@ -1,7 +1,5 @@
 package com.best2team.facebook_clone_be.controller;
 
-import com.best2team.facebook_clone_be.dto.LikeDto;
-import com.best2team.facebook_clone_be.dto.LikeResponseDto;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import com.best2team.facebook_clone_be.service.LikeService;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +16,9 @@ public class LikeController {
         return e.getMessage();
     }
 
-    @PostMapping("/api/post/like/{postId}")
-    private LikeResponseDto pressFavorite(@PathVariable Long postId , @AuthenticationPrincipal UserDetailsImpl userDetails){
-
-        return likeService.like(postId,userDetails);
+    @PostMapping("/api/post/like/{postid}")
+    private String pressFavorite(@PathVariable("postid") Long postid, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return likeService.like(postid, userDetails);
     }
 
-//    @DeleteMapping("/api/board/favoriteboard/{postid}/{userid}")
-//    private String unpressFavorite(@PathVariable Long postid, @PathVariable Long userid){
-//        return likeService.unLike(postid, userid);
-//    }
 }

@@ -1,11 +1,15 @@
-package com.best2team.facebook_clone_be.security;
+package com.best2team.facebook_clone_be.security.config;
 
-
+import com.best2team.facebook_clone_be.security.FilterSkipMatcher;
 import com.best2team.facebook_clone_be.security.filter.FormLoginFilter;
 import com.best2team.facebook_clone_be.security.filter.JwtAuthFilter;
+import com.best2team.facebook_clone_be.security.handler.AuthFailureHandler;
+import com.best2team.facebook_clone_be.security.handler.CustomLogoutSuccessHandler;
+import com.best2team.facebook_clone_be.security.handler.FormLoginSuccessHandler;
 import com.best2team.facebook_clone_be.security.jwt.HeaderTokenExtractor;
 import com.best2team.facebook_clone_be.security.provider.FormLoginAuthProvider;
 import com.best2team.facebook_clone_be.security.provider.JWTAuthProvider;
+import com.best2team.facebook_clone_be.websocket.repository.ChatRoomRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,7 +19,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -30,15 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JWTAuthProvider jwtAuthProvider;
     private final HeaderTokenExtractor headerTokenExtractor;
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+    private final ChatRoomRepository chatRoomRepository;
 
     public WebSecurityConfig(
             JWTAuthProvider jwtAuthProvider,
             HeaderTokenExtractor headerTokenExtractor,
-            CustomLogoutSuccessHandler customLogoutSuccessHandler
+            CustomLogoutSuccessHandler customLogoutSuccessHandler,
+            ChatRoomRepository chatRoomRepository
     ) {
         this.jwtAuthProvider = jwtAuthProvider;
         this.headerTokenExtractor = headerTokenExtractor;
         this.customLogoutSuccessHandler = customLogoutSuccessHandler;
+        this.chatRoomRepository = chatRoomRepository;
     }
 
     @Bean
@@ -65,8 +71,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
 
-        // 서버에서 인증은 JWT로 인증하기 때문에 Session의 생성을 막습니다.
-        http
+        http.headers().frameOptions().disable()
+                .and()
                 .cors();
 
         /*
@@ -101,19 +107,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         FormLoginFilter formLoginFilter = new FormLoginFilter(authenticationManager());
         formLoginFilter.setFilterProcessesUrl("/user/login");
         formLoginFilter.setAuthenticationSuccessHandler(formLoginSuccessHandler());
-        formLoginFilter.setAuthenticationFailureHandler(formLoginFailHandler());
+        formLoginFilter.setAuthenticationFailureHandler(authFailureHandler());
         formLoginFilter.afterPropertiesSet();
         return formLoginFilter;
     }
 
     @Bean
-    public FormLoginFailHandler formLoginFailHandler(){
-        return new FormLoginFailHandler();
-    }
-
-    @Bean
     public FormLoginSuccessHandler formLoginSuccessHandler() {
-        return new FormLoginSuccessHandler();
+        return new FormLoginSuccessHandler(chatRoomRepository);
     }
 
     @Bean
@@ -121,6 +122,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new FormLoginAuthProvider(encodePassword());
     }
 
+    @Bean
+    public AuthFailureHandler authFailureHandler() {
+        return new AuthFailureHandler();
+    }
 
     private JwtAuthFilter jwtFilter() throws Exception {
         List<String> skipPathList = new ArrayList<>();
@@ -132,6 +137,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // h2-console 허용
         skipPathList.add("GET,/h2-console/**");
         skipPathList.add("POST,/h2-console/**");
+        skipPathList.add("GET,/stomp");
+        skipPathList.add("GET,/stomp/**");
+        skipPathList.add("GET,/stomp/**/**");
 
 //        skipPathList.add("POST,/api/board/photo");
 //        skipPathList.add("POST,/api/board/regist");

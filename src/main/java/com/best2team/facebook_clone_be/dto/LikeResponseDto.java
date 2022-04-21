@@ -8,5 +8,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class LikeResponseDto {
-    boolean msg;
+    private Boolean msg;
+
+    public LikeResponseDto(Boolean msg) {
+        this.msg=msg;
+    }
 }

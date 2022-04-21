@@ -1,5 +1,6 @@
 package com.best2team.facebook_clone_be.dto;
 
+import com.best2team.facebook_clone_be.model.User;
 import com.best2team.facebook_clone_be.security.UserDetailsImpl;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,16 @@ public class UserResponseDto {
 
     }
 
+    public UserResponseDto(User user){
+        this.userId = user.getUserId();
+        this.userName = user.getUserName();
+        this.userImage = user.getUserImage().getImageUrl();
+    }
+
     //userImage
     public UserResponseDto(String imageUrl) {
         this.userImage = imageUrl;
     }
+
+
 }

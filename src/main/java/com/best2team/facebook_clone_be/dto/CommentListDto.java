@@ -19,6 +19,5 @@ public class CommentListDto {
         this.comments = page.getContent();
         this.totalPage = page.getTotalPages();
         this.currentPage = page.getNumber();
-
     }
 }

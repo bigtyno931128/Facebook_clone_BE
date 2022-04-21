@@ -19,38 +19,18 @@ public class PostListDto {
     private Long userId;
     private boolean like;
 
-
-    public PostListDto(Long postId, String content, int likeCnt, int commentCnt, LocalDateTime createAt, String userImageUrl,
+    public PostListDto(Long postId, String content, int likeCnt, int commentCnt, LocalDateTime createAt,String userImageUrl,
                        String postImageUrl, String userName, Long userId, boolean like, Long postImageId) {
         this.postId = postId;
         this.content = content;
         this.likeCnt = likeCnt;
         this.commentCnt = commentCnt;
         this.createAt = createAt;
-        this.userImageUrl = userImageUrl;
         this.postImageId = postImageId;
+        this.userImageUrl=userImageUrl;
         this.postImageUrl = postImageUrl;
         this.userName = userName;
         this.userId = userId;
         this.like = like;
     }
-
-//    public PostListDto(Long postId, String content, int likeCnt, int commentCnt, LocalDateTime createAt, String userImageUrl,
-//                       String postImageUrl, String userName, Long userId, boolean like, Long postImageId) {
-//        this.postId = postId;
-//        this.content = content;
-//        this.likeCnt = likeCnt;
-//        this.commentCnt = commentCnt;
-//        this.createAt = createAt;
-//        try {
-//            this.userImageUrl = userImageUrl;
-//        }catch (NullPointerException e){
-//            this.userImageUrl = "없음";
-//        }
-//        this.postImageId = postImageId;
-//        this.postImageUrl = postImageUrl;
-//        this.userName = userName;
-//        this.userId = userId;
-//        this.like = like;
-//    }
 }
